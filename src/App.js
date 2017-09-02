@@ -88,7 +88,6 @@ class App extends Component {
   }
 
   checkboxclicked = (e, id) => {
-    console.log(e.target.value, ', i d=', id)
     let newState = this.state.messages.map((message) => {
     let  newMessage = message
       if (message.id === id) {
@@ -100,7 +99,6 @@ class App extends Component {
   }
 
   starclicked = (e, id) => {
-    console.log('starclicked', e.target.value, ', i d=', id)
     let newState = this.state.messages.map((message) => {
     let  newMessage = message
       if (message.id === id) {

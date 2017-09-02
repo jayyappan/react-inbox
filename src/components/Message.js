@@ -9,8 +9,8 @@ const Message = ({message, boxclicked, starclicked}) => {
           <div className="col-xs-2">
             <input type="checkbox"  onChange={(e) => boxclicked(e, message.id)} checked={message.selected}/>
           </div>
-          <div className="col-xs-2" onClick={starclicked}>
-            <i className={`star fa fa-star${message.starred ? '' : '-o'}`} onClick={starclicked}></i>
+          <div className="col-xs-2">
+            <i className={`star fa fa-star${message.starred ? '' : '-o'}`} onClick={(e) => starclicked(e, message.id)}></i>
           </div>
         </div>
       </div>
