@@ -6,21 +6,31 @@ import Messages from './components/Messages';
 
 class App extends Component {
   constructor (props) {
-    const messages = []
     super(props)
-    this.state = {messages : messages}
+    this.selected = {}
+    this.state = {messages : []}
   }
 
-async componentDidMount() {
-  const response = await fetch("http://localhost:3001/api/messages")
-  const json = await response.json()
-  const messages = json._embedded.messages
-  this.setState({messages: messages})
-}
+  componentDidMount() {
+    this.fetchMessges()
+  }
+
+  async fetchMessges() {
+    const response = await fetch("http://localhost:3001/api/messages")
+    const json = await response.json()
+    const messages = json._embedded.messages
+    let messagesWithSelected = messages.map(message => {
+      message.selected = this.selected[message.id]
+      return message
+    })
+    this.setState({messages: messagesWithSelected})
+  }
+
   selectunselectmessages = (e, select) => {
     let newState = this.state.messages.map((message) => {
-    let  newMessage = message
+      let  newMessage = message
       newMessage.selected = select
+      this.selected[message.id] = select
       return message
     })
     this.setState({messages: newState})
@@ -28,74 +38,90 @@ async componentDidMount() {
 
   checkboxclicked = (e, id) => {
     let newState = this.state.messages.map((message) => {
-    let  newMessage = message
+      let  newMessage = message
       if (message.id === id) {
         newMessage.selected = !message.selected
+        this.selected[id] = newMessage.selected
       }
       return message
     })
     this.setState({messages: newState})
   }
 
-  starclicked = (e, id) => {
-    let newState = this.state.messages.map((message) => {
-    let  newMessage = message
-      if (message.id === id) {
-        newMessage.starred = !message.starred
-      }
-      return message
-    })
-    this.setState({messages: newState})
+  starclicked = async (e, id) => {
+    let requestBody = {
+      "messageIds": [ id ],
+      "command": "star",
+      "star": !this.state.messages.find(message => (message.id == id)).starred
+    }
+    let status = await this.updateServer(requestBody)
+    await this.fetchMessges()
   }
 
-  markasread = () => {
-    let newState = this.state.messages.map((message) => {
-    let  newMessage = message
-      if (message.selected) {
-        newMessage.read = true
+  markasread = async () => {
+      let messageIds = this.state.messages.filter(message => (message.selected)).map(message => message.id)
+      let requestBody = {
+        "messageIds": messageIds,
+        "command": "read",
+        "read": true
       }
-      return message
-    })
-    this.setState({messages: newState})
+      let status = await this.updateServer(requestBody)
+      await this.fetchMessges()
   }
 
-  markasunread = () => {
-    let newState = this.state.messages.map((message) => {
-    let  newMessage = message
-      if (message.selected) {
-        newMessage.read = false
-      }
-      return message
-    })
-    this.setState({messages: newState})
+  markasunread = async () => {
+    let messageIds = this.state.messages.filter(message => (message.selected)).map(message => message.id)
+    let requestBody = {
+      "messageIds": messageIds,
+      "command": "read",
+      "read": false
+    }
+    let status = await this.updateServer(requestBody)
+    await this.fetchMessges()
   }
 
-  applylabel = (e) => {
-    console.log(e.target.value)
-    let newState = this.state.messages.map((message) => {
-    let  newMessage = message
-      if (message.selected && e.target.value !== 'Apply label' && !message.labels.some(label => label === e.target.value)) {
-        newMessage.labels = [...message.labels, e.target.value]
-      }
-      return message
-    })
-    this.setState({messages: newState})
+  applylabel = async (e) => {
+    let messageIds = this.state.messages.filter(message => message.selected && e.target.value !== 'Apply label' && !message.labels.some(label => label === e.target.value)).map(message => message.id)
+    let requestBody = {
+      "messageIds": messageIds,
+      "command": "addLabel",
+      "label": e.target.value
+    }
+    let status = await this.updateServer(requestBody)
+    await this.fetchMessges()
   }
 
-  removelabel = (e) => {
-    let newState = this.state.messages.map((message) => {
-    let  newMessage = message
-      if (message.selected && e.target.value !== 'Remove label' && message.labels.some(label => label === e.target.value)) {
-        newMessage.labels = message.labels.filter(item => item !== e.target.value)
-      }
-      return message
-    })
-    this.setState({messages: newState})
+  removelabel = async (e) => {
+    let messageIds = this.state.messages.filter(message => message.selected && e.target.value !== 'Remove label' && message.labels.some(label => label === e.target.value)).map(message => message.id)
+    let requestBody = {
+      "messageIds": messageIds,
+      "command": "removeLabel",
+      "label": e.target.value
+    }
+    let status = await this.updateServer(requestBody)
+    await this.fetchMessges()
   }
 
-  deletemessages = () => {
-    let newState = this.state.messages.filter(message => (!message.selected))
-    this.setState({messages: newState})
+  deletemessages = async () => {
+    let messageIds = this.state.messages.filter(message => (message.selected)).map(message => message.id)
+    let requestBody = {
+      "messageIds": messageIds,
+      "command": "delete"
+    }
+    let status = await this.updateServer(requestBody)
+    await this.fetchMessges()
+  }
+
+  async updateServer(requestBody) {
+    const response = await fetch ("http://localhost:3001/api/messages", {
+      method: 'PATCH',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    })
+    return response.status
   }
 
   render() {
