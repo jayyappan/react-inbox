@@ -8,7 +8,7 @@ class App extends Component {
   constructor (props) {
     super(props)
     this.selected = {}
-    this.state = {messages : []}
+    this.state = {messages : [], compose: false}
   }
 
   componentDidMount() {
@@ -112,6 +112,25 @@ class App extends Component {
     await this.fetchMessges()
   }
 
+  composeMessage = async (subject, body) => {
+    let requestBody = {
+      "subject": subject,
+      "body": body
+    }
+    await this.addMessage(requestBody)
+    await this.fetchMessges()
+    this.toggleCompose()
+  }
+
+  composeClicked = () => {
+    this.toggleCompose()
+  }
+
+  toggleCompose = () => {
+    let compose = !this.state.compose
+    this.setState({compose: compose})
+  }
+
   async updateServer(requestBody) {
     const response = await fetch ("http://localhost:3001/api/messages", {
       method: 'PATCH',
@@ -124,11 +143,34 @@ class App extends Component {
     return response.status
   }
 
+  async addMessage(requestBody) {
+    const response = await fetch ("http://localhost:3001/api/messages", {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    })
+  }
+
   render() {
     return (
       <div className="App">
-        <Toolbar messages={this.state.messages} markasread={this.markasread} markasunread={this.markasunread} applylabel={this.applylabel} removelabel={this.removelabel} deletemessages={this.deletemessages} selectunselectmessages={this.selectunselectmessages}/>
-        <Messages messages={this.state.messages} boxclicked={this.checkboxclicked} starclicked={this.starclicked}/>
+        <Toolbar messages={this.state.messages}
+                 markasread={this.markasread}
+                 markasunread={this.markasunread}
+                 applylabel={this.applylabel}
+                 removelabel={this.removelabel}
+                 deletemessages={this.deletemessages}
+                 selectunselectmessages={this.selectunselectmessages}
+                 composeClicked={this.composeClicked}
+                 />
+        <Messages messages={this.state.messages}
+                  compose={this.state.compose}
+                  boxclicked={this.checkboxclicked}
+                  starclicked={this.starclicked}
+                  composeMessage={this.composeMessage}/>
       </div>
     );
   }

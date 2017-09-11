@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Toolbar = ({messages, markasread, markasunread, applylabel, removelabel, deletemessages, selectunselectmessages}) => {
+const Toolbar = ({messages, markasread, markasunread, applylabel, removelabel, deletemessages, selectunselectmessages, composeClicked}) => {
   let numUnreadMessages = messages.reduce(((acum, message) => message.read ? acum : acum + 1),0)
   let numSelected = messages.reduce(((acum, message) => message.selected ? acum + 1 : acum),0)
 
@@ -11,6 +11,10 @@ const Toolbar = ({messages, markasread, markasunread, applylabel, removelabel, d
           <span className="badge badge">{numUnreadMessages}</span>
           unread messages
         </p>
+
+        <a className="btn btn-danger" onClick={composeClicked}>
+              <i className="fa fa-plus"></i>
+        </a>
 
         <button className="btn btn-default" onClick={(e) => selectunselectmessages(e, !(numSelected === messages.length))}>
           <i className={`fa fa-${numSelected === 0 ? '' : numSelected === messages.length ? 'check-' : 'minus-'}square-o`}></i>
