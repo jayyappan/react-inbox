@@ -1,6 +1,9 @@
 import React from 'react';
 import Message from './Message';
 import Compose from './Compose';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {toggleStar} from '../actions';
 
 const Messages = ({messages, compose, boxclicked, starclicked, composeMessage}) => {
   return (
@@ -13,4 +16,14 @@ const Messages = ({messages, compose, boxclicked, starclicked, composeMessage}) 
   )
 }
 
-export default Messages
+const mapStateToProps = state => ({
+  messages: state.messages.all,
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+}, dispatch)
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Messages);

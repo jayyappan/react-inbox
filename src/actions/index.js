@@ -18,12 +18,29 @@ export const toggleStar = (message) => {
   }
 }
 
+export const toggleCheckBox = (id, selected) => {
+  return async (dispatch) => {
+    let newSelected = {...selected}
+    newSelected[id] = !selected[id]
+    dispatch({
+      type: types.CHECKBOX_CLICKED,
+      selected: newSelected
+    })
+  }
+}
+
 export const initialLoad = () => {
   return async (dispatch) => {
     let messages = await fetchMessges()
+    let selected = {}
+    messages.map(message => {
+      selected[message.id] = false
+      return false
+    })
     dispatch({
       type: types.FETCH_MESSAGES,
-      messages
+      messages,
+      selected
     })
   }
 }
