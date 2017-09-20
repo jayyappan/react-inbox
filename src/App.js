@@ -48,16 +48,6 @@ class App extends Component {
     this.setState({messages: newState})
   }
 
-  starclicked = async (e, id) => {
-    let requestBody = {
-      "messageIds": [ id ],
-      "command": "star",
-      "star": !this.state.messages.find(message => (message.id == id)).starred
-    }
-    let status = await this.updateServer(requestBody)
-    await this.fetchMessges()
-  }
-
   markasread = async () => {
       let messageIds = this.state.messages.filter(message => (message.selected)).map(message => message.id)
       let requestBody = {
@@ -169,7 +159,6 @@ class App extends Component {
         <Messages messages={this.state.messages}
                   compose={this.state.compose}
                   boxclicked={this.checkboxclicked}
-                  starclicked={this.starclicked}
                   composeMessage={this.composeMessage}/>
       </div>
     );
