@@ -18,6 +18,16 @@ export const toggleStar = (message) => {
   }
 }
 
+export const initialLoad = () => {
+  return async (dispatch) => {
+    let messages = await fetchMessges()
+    dispatch({
+      type: types.FETCH_MESSAGES,
+      messages
+    })
+  }
+}
+
 async function updateServer(requestBody) {
   const response = await fetch ("http://localhost:3001/api/messages", {
     method: 'PATCH',
@@ -34,6 +44,5 @@ async function fetchMessges() {
   const response = await fetch("http://localhost:3001/api/messages")
   const json = await response.json()
   const messages = json._embedded.messages
-
   return messages
 }
