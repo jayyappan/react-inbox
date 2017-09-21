@@ -5,19 +5,20 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {toggleStar} from '../actions';
 
-const Messages = ({messages, compose, boxclicked, starclicked, composeMessage}) => {
+const Messages = ({messages, composeState}) => {
   return (
     <div>
-      { compose &&
-        <Compose composeMessage={composeMessage}/>
+      { composeState &&
+        <Compose />
       }
-      {messages.map(message => <Message key={message.id} message={message} boxclicked={boxclicked} starclicked={starclicked}/>)}
+      {messages.map(message => <Message key={message.id} message={message}/>)}
     </div>
   )
 }
 
 const mapStateToProps = state => ({
   messages: state.messages.all,
+  composeState: state.toolbar.composeState,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

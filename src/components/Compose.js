@@ -1,10 +1,13 @@
 import React from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {addMessage} from '../actions';
 
-const Compose = ({composeMessage}) => {
+const Compose = ({addMessage}) => {
 
   const createMessage = (e) => {
     e.preventDefault();
-    composeMessage(e.target.subject.value, e.target.body.value)
+    addMessage(e.target.subject.value, e.target.body.value)
   }
 
   return (
@@ -35,4 +38,14 @@ const Compose = ({composeMessage}) => {
   )
 }
 
-export default Compose
+const mapStateToProps = state => ({
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  addMessage,
+}, dispatch)
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Compose);

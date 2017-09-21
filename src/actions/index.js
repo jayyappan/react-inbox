@@ -1,5 +1,146 @@
 import * as types from "../actions/actionTypes";
 
+export const selectunselectmessages = (select, messages) => {
+  return async (dispatch) => {
+    let newSelected = {}
+    messages.map(message => {
+      newSelected[message.id] = select
+      return true
+    })
+
+    dispatch({
+      type: types.SELECT_UNSELECT_ALL,
+      selected: newSelected
+    })
+  }
+}
+
+export const markAsRead = (selected, messages) => {
+  return async (dispatch) => {
+    let messageIds = messages.filter(message => (selected[message.id])).map(message => message.id)
+    let requestBody = {
+      "messageIds": messageIds,
+      "command": "read",
+      "read": true
+    }
+
+    let status = await updateServer(requestBody)
+    let newMessages = await fetchMessges()
+
+    dispatch({
+      type: types.MARK_AS_READ,
+      messages: newMessages
+    })
+  }
+}
+
+export const markAsUnRead = (selected, messages) => {
+  return async (dispatch) => {
+    let messageIds = messages.filter(message => (selected[message.id])).map(message => message.id)
+    let requestBody = {
+      "messageIds": messageIds,
+      "command": "read",
+      "read": false
+    }
+
+    let status = await updateServer(requestBody)
+    let newMessages = await fetchMessges()
+
+    dispatch({
+      type: types.MARK_AS_UNREAD,
+      messages: newMessages
+    })
+  }
+}
+
+export const applyLabel = (selected, messages, newLabel) => {
+  return async (dispatch) => {
+    let messageIds = messages.filter(message => selected[message.id] && newLabel !== 'Apply label' && !message.labels.some(label => label === newLabel)).map(message => message.id)
+    let requestBody = {
+      "messageIds": messageIds,
+      "command": "addLabel",
+      "label": newLabel
+    }
+
+    let status = await updateServer(requestBody)
+    let newMessages = await fetchMessges()
+
+    dispatch({
+      type: types.APPLY_LABEL,
+      messages: newMessages
+    })
+  }
+}
+
+export const removeLabel = (selected, messages, removeLabel) => {
+  return async (dispatch) => {
+    let messageIds = messages.filter(message => selected[message.id] && removeLabel !== 'Remove label' && message.labels.some(label => label === removeLabel)).map(message => message.id)
+    let requestBody = {
+      "messageIds": messageIds,
+      "command": "removeLabel",
+      "label": removeLabel
+    }
+
+    let status = await updateServer(requestBody)
+    let newMessages = await fetchMessges()
+
+    dispatch({
+      type: types.REMOVE_LABEL,
+      messages: newMessages
+    })
+  }
+}
+
+export const deleteMessages = (selected, messages) => {
+  return async (dispatch) => {
+    let messageIds = messages.filter(message => (selected[message.id])).map(message => message.id)
+    let requestBody = {
+      "messageIds": messageIds,
+      "command": "delete"
+    }
+
+    let status = await updateServer(requestBody)
+    let newMessages = await fetchMessges()
+
+    dispatch({
+      type: types.DELETE_MESSAGES,
+      messages: newMessages
+    })
+  }
+}
+
+export const toggleCompose = (composeState) => {
+  return async (dispatch) => {
+    let newComposeState = !composeState
+    dispatch({
+      type: types.TOGGLE_COMPOSE,
+      composeState: newComposeState
+    })
+  }
+}
+
+export const addMessage = (subject, body) => {
+  return async (dispatch) => {
+    let requestBody = {
+      "subject": subject,
+      "body": body
+    }
+
+    await createMessage(requestBody)
+    let messages = await fetchMessges()
+
+    dispatch({
+      type: types.TOGGLE_COMPOSE,
+      composeState: false
+    })
+
+    dispatch({
+      type: types.CREATE_MESSAGE,
+      messages
+    })
+  }
+}
+
 export const toggleStar = (message) => {
   return async (dispatch) => {
     //dispatch({ type: MESSAGES_REQUEST_STARTED })
@@ -62,4 +203,15 @@ async function fetchMessges() {
   const json = await response.json()
   const messages = json._embedded.messages
   return messages
+}
+
+async function createMessage(requestBody) {
+  const response = await fetch ("http://localhost:3001/api/messages", {
+    method: 'POST',
+    body: JSON.stringify(requestBody),
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    }
+  })
 }

@@ -5,11 +5,6 @@ import {bindActionCreators} from 'redux';
 import {toggleStar, toggleCheckBox} from '../actions';
 
 const Message = ({message, selected, toggleCheckBox, toggleStar}) => {
-  // console.log(".....................")
-  // console.log("message=", message)
-  // console.log("selected=", selected)
-  // console.log("Selected-msgid=", selected[message.id])
-  // debugger
   return (
     <div className={`row message ${message.read ? 'read' : 'unread'}${selected[message.id] ? ' selected' : ''}`}>
       <div className="col-xs-1">
@@ -33,7 +28,6 @@ const Message = ({message, selected, toggleCheckBox, toggleStar}) => {
 }
 
 const mapStateToProps = state => ({
-  messages: state.messages.all,
   selected: state.messages.selected,
 })
 

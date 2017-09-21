@@ -1,8 +1,14 @@
 import React from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {selectunselectmessages, markAsRead, markAsUnRead, applyLabel, removeLabel, deleteMessages, toggleCompose} from '../actions';
 
-const Toolbar = ({messages, markasread, markasunread, applylabel, removelabel, deletemessages, selectunselectmessages, composeClicked}) => {
-  let numUnreadMessages = messages.reduce(((acum, message) => message.read ? acum : acum + 1),0)
-  let numSelected = messages.reduce(((acum, message) => message.selected ? acum + 1 : acum),0)
+const Toolbar = ({messages, selected, composeState, markAsRead, markAsUnRead, applyLabel, removeLabel, deleteMessages, selectunselectmessages, toggleCompose}) => {
+  let numSelected = 0
+  let numUnreadMessages = messages.reduce(((acum, message) => {
+    numSelected += (selected[message.id] ? 1 : 0)
+    return message.read ? acum : acum + 1
+  }),0)
 
   return (
     <div className="row toolbar">
@@ -12,37 +18,37 @@ const Toolbar = ({messages, markasread, markasunread, applylabel, removelabel, d
           unread messages
         </p>
 
-        <a className="btn btn-danger" onClick={composeClicked}>
+        <a className="btn btn-danger" onClick={(e) => toggleCompose(composeState)}>
               <i className="fa fa-plus"></i>
         </a>
 
-        <button className="btn btn-default" onClick={(e) => selectunselectmessages(e, !(numSelected === messages.length))}>
+        <button className="btn btn-default" onClick={(e) => selectunselectmessages(!(numSelected === messages.length), messages)}>
           <i className={`fa fa-${numSelected === 0 ? '' : numSelected === messages.length ? 'check-' : 'minus-'}square-o`}></i>
         </button>
 
-        <button className="btn btn-default" onClick={markasread} disabled={numSelected === 0}>
+        <button className="btn btn-default" onClick={(e) => markAsRead(selected, messages)} disabled={numSelected === 0}>
           Mark As Read
         </button>
 
-        <button className="btn btn-default" onClick={markasunread} disabled={numSelected === 0}>
+        <button className="btn btn-default" onClick={(e) => markAsUnRead(selected, messages)} disabled={numSelected === 0}>
           Mark As Unread
         </button>
 
-        <select className="form-control label-select" onChange={applylabel} disabled={numSelected === 0}>
+        <select className="form-control label-select" onChange={(e) => applyLabel(selected, messages, e.target.value)} disabled={numSelected === 0}>
           <option>Apply label</option>
           <option value="dev">dev</option>
           <option value="personal">personal</option>
           <option value="gschool">gschool</option>
         </select>
 
-        <select className="form-control label-select" onChange={removelabel} disabled={numSelected === 0}>
+        <select className="form-control label-select" onChange={(e) => removeLabel(selected, messages, e.target.value)} disabled={numSelected === 0}>
           <option>Remove label</option>
           <option value="dev">dev</option>
           <option value="personal">personal</option>
           <option value="gschool">gschool</option>
         </select>
 
-        <button className="btn btn-default" onClick={deletemessages} disabled={numSelected === 0}>
+        <button className="btn btn-default" onClick={(e) => deleteMessages(selected, messages)} disabled={numSelected === 0}>
           <i className="fa fa-trash-o"></i>
         </button>
       </div>
@@ -50,4 +56,23 @@ const Toolbar = ({messages, markasread, markasunread, applylabel, removelabel, d
   )
 }
 
-export default Toolbar
+const mapStateToProps = state => ({
+  messages: state.messages.all,
+  selected: state.messages.selected,
+  composeState: state.toolbar.composeState,
+})
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  selectunselectmessages,
+  markAsRead,
+  markAsUnRead,
+  applyLabel,
+  removeLabel,
+  deleteMessages,
+  toggleCompose,
+}, dispatch)
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Toolbar);
