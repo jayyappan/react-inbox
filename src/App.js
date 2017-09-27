@@ -6,6 +6,7 @@ import Messages from './components/Messages';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {initialLoad} from './actions';
+import {BrowserRouter as Router, Link} from 'react-router-dom';
 
 class App extends Component {
   constructor (props) {
@@ -20,10 +21,12 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <Toolbar />
-        <Messages />
-      </div>
+      <Router>
+        <div className="App">
+          <Toolbar />
+          <Messages />
+        </div>
+      </Router>
     );
   }
 }

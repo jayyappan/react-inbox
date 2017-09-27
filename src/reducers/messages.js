@@ -2,6 +2,7 @@ import * as types from "../actions/actionTypes";
 
 const initialState = {
   all: [],
+  selectedMessageDetail: {},
   selected: {},
 }
 
@@ -30,6 +31,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         all: action.messages,
+      }
+    case types.MESSAGE_SUBJECT_CLICKED:
+      return {
+        ...state,
+        selectedMessageDetail: action.messageDetail
+      }
+    case types.TOGGLE_COMPOSE:
+      return {
+        ...state,
+        selectedMessageDetail: null,
       }
     default:
       return state

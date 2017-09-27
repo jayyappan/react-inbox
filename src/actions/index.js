@@ -114,7 +114,7 @@ export const toggleCompose = (composeState) => {
     let newComposeState = !composeState
     dispatch({
       type: types.TOGGLE_COMPOSE,
-      composeState: newComposeState
+      composeState: newComposeState,
     })
   }
 }
@@ -155,6 +155,21 @@ export const toggleStar = (message) => {
     dispatch({
       type: types.STAR_CLICKED,
       messages
+    })
+  }
+}
+
+export const fetchMessageDetail = (id) => {
+  return async (dispatch) => {
+    const response = await fetch(`http://localhost:3001/api/messages/${id}`)
+    const messageDetail = await response.json()
+    dispatch({
+      type: types.TOGGLE_COMPOSE,
+      composeState: false
+    })
+    dispatch({
+      type: types.MESSAGE_SUBJECT_CLICKED,
+      messageDetail
     })
   }
 }
