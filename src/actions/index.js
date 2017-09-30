@@ -143,7 +143,6 @@ export const addMessage = (subject, body) => {
 
 export const toggleStar = (message) => {
   return async (dispatch) => {
-    //dispatch({ type: MESSAGES_REQUEST_STARTED })
     let requestBody = {
       "messageIds": [ message.id ],
       "command": "star",
@@ -161,15 +160,21 @@ export const toggleStar = (message) => {
 
 export const fetchMessageDetail = (id) => {
   return async (dispatch) => {
+    let requestBody = {
+      "messageIds": [ id ],
+      "command": "read",
+      "read": true
+    }
+    await updateServer(requestBody)
+    let messages = await fetchMessges()
+
     const response = await fetch(`http://localhost:3001/api/messages/${id}`)
     const messageDetail = await response.json()
-    // dispatch({
-    //   type: types.TOGGLE_COMPOSE,
-    //   composeState: false
-    // })
+
     dispatch({
       type: types.MESSAGE_SUBJECT_CLICKED,
-      messageDetail
+      messageDetail,
+      messages: messages
     })
   }
 }

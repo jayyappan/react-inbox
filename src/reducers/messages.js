@@ -35,7 +35,8 @@ export default (state = initialState, action) => {
     case types.MESSAGE_SUBJECT_CLICKED:
       return {
         ...state,
-        selectedMessageDetail: action.messageDetail
+        all: action.messages,
+        selectedMessageDetail: action.messageDetail,
       }
     case types.TOGGLE_COMPOSE:
       return {
