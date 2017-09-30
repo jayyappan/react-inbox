@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import {Route, Link, Switch} from 'react-router-dom';
 import {selectunselectmessages, markAsRead, markAsUnRead, applyLabel, removeLabel, deleteMessages, toggleCompose} from '../actions';
 
 const Toolbar = ({messages, selected, composeState, markAsRead, markAsUnRead, applyLabel, removeLabel, deleteMessages, selectunselectmessages, toggleCompose}) => {
@@ -18,9 +19,19 @@ const Toolbar = ({messages, selected, composeState, markAsRead, markAsUnRead, ap
           unread messages
         </p>
 
-        <a className="btn btn-danger" onClick={(e) => toggleCompose(composeState)}>
-              <i className="fa fa-plus"></i>
-        </a>
+        <Switch>
+          <Route exact path="/" render={() => <Link to="/compose" className="btn btn-danger" onClick={(e) => toggleCompose(composeState)}>
+            <i className="fa fa-plus"></i>
+          </Link>} />
+          <Route path="/compose" render={() => <Link to="/" className="btn btn-danger" onClick={(e) => toggleCompose(composeState)}>
+            <i className="fa fa-plus"></i>
+          </Link>} />
+          <Route path="/messages" render={() => <Link to="/compose" className="btn btn-danger" onClick={(e) => toggleCompose(composeState)}>
+            <i className="fa fa-plus"></i>
+          </Link>} />
+        </Switch>
+
+
 
         <button className="btn btn-default" onClick={(e) => selectunselectmessages(!(numSelected === messages.length), messages)}>
           <i className={`fa fa-${numSelected === 0 ? '' : numSelected === messages.length ? 'check-' : 'minus-'}square-o`}></i>

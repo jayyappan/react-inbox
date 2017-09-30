@@ -24,7 +24,7 @@ export const markAsRead = (selected, messages) => {
       "read": true
     }
 
-    let status = await updateServer(requestBody)
+    await updateServer(requestBody)
     let newMessages = await fetchMessges()
 
     dispatch({
@@ -43,7 +43,7 @@ export const markAsUnRead = (selected, messages) => {
       "read": false
     }
 
-    let status = await updateServer(requestBody)
+    await updateServer(requestBody)
     let newMessages = await fetchMessges()
 
     dispatch({
@@ -62,7 +62,7 @@ export const applyLabel = (selected, messages, newLabel) => {
       "label": newLabel
     }
 
-    let status = await updateServer(requestBody)
+    await updateServer(requestBody)
     let newMessages = await fetchMessges()
 
     dispatch({
@@ -81,7 +81,7 @@ export const removeLabel = (selected, messages, removeLabel) => {
       "label": removeLabel
     }
 
-    let status = await updateServer(requestBody)
+    await updateServer(requestBody)
     let newMessages = await fetchMessges()
 
     dispatch({
@@ -99,7 +99,7 @@ export const deleteMessages = (selected, messages) => {
       "command": "delete"
     }
 
-    let status = await updateServer(requestBody)
+    await updateServer(requestBody)
     let newMessages = await fetchMessges()
 
     dispatch({
@@ -149,7 +149,7 @@ export const toggleStar = (message) => {
       "command": "star",
       "star": !message.starred
     }
-    let status = await updateServer(requestBody)
+    await updateServer(requestBody)
     let messages = await fetchMessges()
 
     dispatch({
@@ -163,10 +163,10 @@ export const fetchMessageDetail = (id) => {
   return async (dispatch) => {
     const response = await fetch(`http://localhost:3001/api/messages/${id}`)
     const messageDetail = await response.json()
-    dispatch({
-      type: types.TOGGLE_COMPOSE,
-      composeState: false
-    })
+    // dispatch({
+    //   type: types.TOGGLE_COMPOSE,
+    //   composeState: false
+    // })
     dispatch({
       type: types.MESSAGE_SUBJECT_CLICKED,
       messageDetail
@@ -221,7 +221,7 @@ async function fetchMessges() {
 }
 
 async function createMessage(requestBody) {
-  const response = await fetch ("http://localhost:3001/api/messages", {
+  await fetch ("http://localhost:3001/api/messages", {
     method: 'POST',
     body: JSON.stringify(requestBody),
     headers: {

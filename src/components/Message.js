@@ -2,9 +2,10 @@ import React from 'react';
 import {Labels} from './Labels';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import {Route, Link, Switch} from 'react-router-dom';
 import {toggleStar, toggleCheckBox, fetchMessageDetail} from '../actions';
 
-const Message = ({message, selectedMessageDetail, selected, toggleCheckBox, toggleStar, fetchMessageDetail}) => {
+const Message = ({match, message, selectedMessageDetail, selected, toggleCheckBox, toggleStar, fetchMessageDetail}) => {
   return (
     <div>
       <div className={`row message ${message.read ? 'read' : 'unread'}${selected[message.id] ? ' selected' : ''}`}>
@@ -18,20 +19,24 @@ const Message = ({message, selectedMessageDetail, selected, toggleCheckBox, togg
             </div>
           </div>
         </div>
-        <div className="col-xs-11" onClick={(e) => fetchMessageDetail(message.id)}>
-           {Labels(message.labels)}
-          <a href="#">
+        <Link to={`/messages/${message.id}`} >
+          <div className="col-xs-11" onClick={(e) => fetchMessageDetail(message.id)}>
+            {Labels(message.labels)}
             {message.subject}
-          </a>
-        </div>
-      </div>
-      { selectedMessageDetail && selectedMessageDetail.id === message.id &&
-        <div className="row message-body">
-          <div className="col-xs-11 col-xs-offset-1">
-            {selectedMessageDetail.body}
           </div>
-        </div>
-      }
+        </Link>
+      </div>
+      <Route path={`/messages/${message.id}`} render={() => {
+        if (selectedMessageDetail.id != message.id) {
+          fetchMessageDetail(message.id)
+        }
+        return (
+          <div className="row message-body">
+            <div className="col-xs-11 col-xs-offset-1">
+              {selectedMessageDetail.body}
+            </div>
+          </div>)
+      }}/>
     </div>
 
   )

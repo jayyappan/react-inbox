@@ -40,7 +40,7 @@ export default (state = initialState, action) => {
     case types.TOGGLE_COMPOSE:
       return {
         ...state,
-        selectedMessageDetail: null,
+        selectedMessageDetail: {},
       }
     default:
       return state

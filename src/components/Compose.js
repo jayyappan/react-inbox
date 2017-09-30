@@ -2,12 +2,14 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {addMessage} from '../actions';
+import {Link} from 'react-router-dom';
 
-const Compose = ({addMessage}) => {
+const Compose = ({addMessage, history}) => {
 
   const createMessage = (e) => {
     e.preventDefault();
     addMessage(e.target.subject.value, e.target.body.value)
+    history.push('/')
   }
 
   return (
@@ -49,3 +51,7 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Compose);
+
+// <Link to="/">
+//   <input type="submit" value="Send" className="btn btn-primary" />
+// </Link>
