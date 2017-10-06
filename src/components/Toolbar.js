@@ -70,7 +70,7 @@ const Toolbar = ({messages, selected, composeState, markAsRead, markAsUnRead, ap
 const mapStateToProps = state => ({
   messages: state.messages.all,
   selected: state.messages.selected,
-  composeState: state.toolbar.composeState,
+  // composeState: state.toolbar.composeState,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -4,9 +4,9 @@ import Compose from './Compose';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {toggleStar} from '../actions';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import {Route, Link} from 'react-router-dom';
 
-const Messages = ({messages, composeState}) => {
+const Messages = ({messages}) => {
   return (
     <div>
       <Route path="/compose" component={Compose} />
@@ -17,7 +17,6 @@ const Messages = ({messages, composeState}) => {
 
 const mapStateToProps = state => ({
   messages: state.messages.all,
-  composeState: state.toolbar.composeState,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
