@@ -51,7 +51,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Compose);
-
-// <Link to="/">
-//   <input type="submit" value="Send" className="btn btn-primary" />
-// </Link>

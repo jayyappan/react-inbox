@@ -8,6 +8,8 @@ const initialState = {
 
 export default (state = initialState, action) => {
 
+// console.log("Reducer state=", state)
+// console.log("Reducer action=", action)
   switch (action.type) {
     case types.FETCH_MESSAGES:
       return {

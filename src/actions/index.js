@@ -1,17 +1,14 @@
 import * as types from "../actions/actionTypes";
 
 export const selectunselectmessages = (select, messages) => {
-  return async (dispatch) => {
-    let newSelected = {}
-    messages.map(message => {
-      newSelected[message.id] = select
-      return true
-    })
-
-    dispatch({
-      type: types.SELECT_UNSELECT_ALL,
-      selected: newSelected
-    })
+  let newSelected = {}
+  messages.map(message => {
+    newSelected[message.id] = select
+    return true
+  })
+  return {
+    type: types.SELECT_UNSELECT_ALL,
+    selected: newSelected
   }
 }
 
@@ -110,12 +107,10 @@ export const deleteMessages = (selected, messages) => {
 }
 
 export const toggleCompose = (composeState) => {
-  return async (dispatch) => {
-    let newComposeState = !composeState
-    dispatch({
-      type: types.TOGGLE_COMPOSE,
-      composeState: newComposeState,
-    })
+  let newComposeState = !composeState
+  return {
+    type: types.TOGGLE_COMPOSE,
+    composeState: newComposeState,
   }
 }
 
@@ -180,13 +175,11 @@ export const fetchMessageDetail = (id) => {
 }
 
 export const toggleCheckBox = (id, selected) => {
-  return async (dispatch) => {
-    let newSelected = {...selected}
-    newSelected[id] = !selected[id]
-    dispatch({
-      type: types.CHECKBOX_CLICKED,
-      selected: newSelected
-    })
+  let newSelected = {...selected}
+  newSelected[id] = !selected[id]
+  return {
+    type: types.CHECKBOX_CLICKED,
+    selected: newSelected
   }
 }
 

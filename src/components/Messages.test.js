@@ -36,7 +36,7 @@ const messages = {
   ]
 }
 
-describe('Message', () => {
+describe('Messages', () => {
   it('renders messages', () => {
     const wrapper = shallow(<Messages.WrappedComponent messages={ messages.all } />)
 
